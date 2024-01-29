@@ -13,8 +13,15 @@
 #include <devel/init.hh>
 #include <core/import_pose/import_pose.hh>
 #include <utility/pointer/owning_ptr.hh>
+
 #include <core/pose/Pose.hh>
 
+#include <core/scoring/ScoreFunctionFactory.hh>
+
+#include <core/scoring/ScoreFunction.hh>
+#include <utility/options/OptionCollection.hh>
+
+using namespace core::scoring;
 int main( int argc, char ** argv) {
 	devel::init( argc, argv ) ;
 	utility::vector1< std::string > filenames = basic::options::option[
@@ -27,6 +34,9 @@ int main( int argc, char ** argv) {
 		return 1;
 	}
 	core::pose::PoseOP mypose = core::import_pose::pose_from_file( filenames[1] );
+	ScoreFunctionOP sfxn = get_score_function();
+	core::Real score = sfxn -> score(*mypose);
 	std::cout << "Hello World!" << std::endl;
+	std::cout << score << std::endl;
 	return 0;
 }

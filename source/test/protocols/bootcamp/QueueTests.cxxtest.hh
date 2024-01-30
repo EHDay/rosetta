@@ -29,6 +29,8 @@
 // Utility, etc Headers
 #include <basic/Tracer.hh>
 
+#include <protocols/bootcamp/Queue.hh>
+#include <utility/VirtualBase.hh>
 static basic::Tracer TR("QueueTests");
 
 
@@ -38,19 +40,43 @@ class QueueTests : public CxxTest::TestSuite {
 public:
 
 	void setUp() {
-		core_init();
+		protocols::bootcamp::Queue q_;
+		//protocols::bootcamp::Queue q_full("First","Second");
 
 	}
 
 	void tearDown() {
-
 	}
 	
 	void test_first() {
-		TS_TRACE( "Running my first  unit test!" );
+		TS_TRACE( "Running my first unit test!" );
 		TS_ASSERT( true );
 	}
 
+	void test_enqueue() {
+		q_.enqueue("Test");
+		TS_ASSERT(q_.size() == 1);
+		TS_TRACE(q_.size());
+	}
+
+	void test_dequeue() {
+		q_.enqueue("Test2");
+		q_.dequeue();
+		TS_ASSERT(q_.size() == 1);
+	}
+
+	void test_size() {
+		q_.enqueue("Test3");
+		TS_ASSERT(q_.size() == 2);
+	}
+
+	void test_is_empty() {
+		TS_ASSERT(not q_.is_empty());
+	}
+
+private:
+	protocols::bootcamp::Queue q_;
+	//protocols::bootcamp::Queue q_full;
 
 
 

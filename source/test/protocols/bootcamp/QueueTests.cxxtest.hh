@@ -36,50 +36,68 @@ static basic::Tracer TR("QueueTests");
 
 class QueueTests : public CxxTest::TestSuite {
 	//Define Variables
-
+	utility::pointer::shared_ptr< protocols::bootcamp::Queue > q_single = protocols::bootcamp::QueueOP (new protocols::bootcamp::Queue());
+	utility::pointer::shared_ptr< protocols::bootcamp::Queue > q_empty = protocols::bootcamp::QueueOP (new protocols::bootcamp::Queue());
+	utility::pointer::shared_ptr< protocols::bootcamp::Queue > q_multi = protocols::bootcamp::QueueOP (new protocols::bootcamp::Queue());
 public:
 
 	void setUp() {
-		protocols::bootcamp::Queue q_;
-		//protocols::bootcamp::Queue q_full("First","Second");
-
+		//q4 = protocols::bootcamp::QueueOP (new protocols::bootcamp::Queue()); 
+		//protocols::bootcamp::Queue q_empty;
+		//protocols::bootcamp::Queue q_single;
+		//q_single = protocols::bootcamp::Queue();
+		//q_single->enqueue("Test1");
+		//TS_TRACE(q_single.size());
+		//protocols::bootcamp::Queue q_multi;
+		//q_multi = protocols::bootcamp::Queue();
+		//q_multi->enqueue("Test1");
+		//q_multi->enqueue("Test2");	
 	}
 
 	void tearDown() {
 	}
 	
 	void test_first() {
-		TS_TRACE( "Running my first unit test!" );
+		//TS_TRACE( "Running my first unit test!" );
 		TS_ASSERT( true );
 	}
 
 	void test_enqueue() {
-		q_.enqueue("Test");
-		TS_ASSERT(q_.size() == 1);
-		TS_TRACE(q_.size());
+		TS_ASSERT(q_empty->is_empty())
+		q_empty->enqueue("Test");
+		TS_ASSERT(not q_empty->is_empty());
+		TS_ASSERT(q_empty->size() == 1);
+		q_empty->enqueue("Test2");
+		TS_ASSERT(q_empty->size() == 2);
 	}
 
 	void test_dequeue() {
-		q_.enqueue("Test2");
-		q_.dequeue();
-		TS_ASSERT(q_.size() == 1);
+		q_single->enqueue("Test1");
+		//TS_TRACE(q_single.size());
+		q_single->enqueue("Test2");
+		//TS_TRACE(q_single.size());
+		q_single->dequeue();
+		//TS_TRACE(q_single.size());
+		TS_ASSERT(q_single->size() == 1);
 	}
 
 	void test_size() {
-		q_.enqueue("Test3");
-		TS_ASSERT(q_.size() == 2);
+		q_multi->enqueue("Test1");
+		q_multi->enqueue("Test2");
+		TS_TRACE(q_multi->size());
+		q_multi->enqueue("Test3");
+		TS_TRACE(q_multi->size());
+		TS_ASSERT(q_multi->size() == 3);
 	}
 
 	void test_is_empty() {
-		TS_ASSERT(not q_.is_empty());
+		q_single->dequeue();
+		TS_ASSERT(q_single->is_empty());
 	}
 
 private:
-	protocols::bootcamp::Queue q_;
-	//protocols::bootcamp::Queue q_full;
-
-
-
-
-
+	//protocols::bootcamp::QueueOP q_empty;
+	//protocols::bootcamp::QueueOP q_single;
+	//protocols::bootcamp::QueueOP q_multi;
+	protocols::bootcamp::QueueOP  q4;
 };

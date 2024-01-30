@@ -32,6 +32,7 @@
 #include<core/kinematics/MoveMap.hh>
 #include<core/optimization/MinimizerOptions.hh>
 #include<core/optimization/AtomTreeMinimizer.hh>
+
 using namespace core::scoring;
 int main( int argc, char ** argv) {
 	devel::init( argc, argv ) ;
@@ -44,15 +45,18 @@ int main( int argc, char ** argv) {
 		std::cout << "You didn't provide a PDB file with the -in::file::s option" << std::endl;
 		return 1;
 	}
+	
 	core::pose::PoseOP mypose = core::import_pose::pose_from_file( filenames[1] );
 	ScoreFunctionOP sfxn = get_score_function();
 	
 	core::Real score = sfxn -> score(*mypose);
-	std::cout << score << std::endl;
+	std::cout << "Initial score: " << score << std::endl;
+	
 	core::Size seqpos;
 	protocols::moves::MonteCarlo mc= protocols::moves::MonteCarlo(* mypose, * sfxn, 1.0);
 	seqpos = mypose->size();
-	std::cout << seqpos << std::endl;
+	std::cout << "Number of residues: " << seqpos << std::endl;
+	
 	protocols::moves::PyMOLObserverOP the_observer = protocols::moves::AddPyMOLObserver( *mypose, true, 0 );
 	the_observer->pymol().apply( *mypose);
 
@@ -63,15 +67,22 @@ int main( int argc, char ** argv) {
 	core::optimization::MinimizerOptions min_opts( "lbfgs_armijo_atol", 0.01, true );
 	
 	core::optimization::AtomTreeMinimizer atm;
-	core::pose::Pose copy_pose;	
-	for (core::Size i = 1; i <= 10; ++i) {
-		std::cout << i << std::endl;
+	core::pose::Pose copy_pose;
+	core::Real score_avg = 0;
+	core::Size accepted = 0;
+	core::Size not_accepted = 0;
+	for (core::Size i = 1; i <= 201; ++i) {
+		//std::cout << i << std::endl;
+		
 		core::Real uniform_random_number = numeric::random::uniform();
 		core::Real pert1 = numeric::random::gaussian();
 		core::Real pert2 = numeric::random::gaussian();
+		
 		//std::cout << uniform_random_number << std::endl;
+		
 		core::Size randres = static_cast< core::Size > ( uniform_random_number * seqpos + 1 );
-		std::cout << randres << std::endl;
+		//std::cout << randres << std::endl;
+		
 		core::Real orig_phi = mypose->phi( randres );
 		core::Real orig_psi = mypose->psi( randres );
 		mypose->set_phi( randres, orig_phi + pert1 );
@@ -82,8 +93,24 @@ int main( int argc, char ** argv) {
 		copy_pose = *mypose;
 		atm.run( copy_pose, mm, *sfxn, min_opts );
 		*mypose = copy_pose;
+		//std::cout << "total_score: " <<  mc.total_score_of_last_considered_pose();
 		bool boltzmann_pass = mc.boltzmann (* mypose );
-		std::cout <<boltzmann_pass<< std::endl;
+		score_avg += mc.last_score();
+		if (boltzmann_pass) {
+			accepted += 1;
+		}
+		else {
+			not_accepted += 1;
+		}
+		//std::cout << "total_score: " <<  mc.total_score_of_last_considered_pose();
+		//std::cout << "total_trials: " << mc.total_trials();
+		std::cout <<accepted<< std::endl;
+		std::cout << not_accepted<<std::endl;
+		if (i % 100 == 0) {
+			core::Real acceptance_rate = (core::Real) accepted / (core::Real) i;
+			std::cout << "Acceptance Rate" << acceptance_rate << std::endl;
+			std::cout << "Score average" << (score_avg/i) << std::endl;
+		}
 	}
 	return 0;
 }

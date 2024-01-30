@@ -21,6 +21,8 @@
 #include <core/scoring/ScoreFunction.hh>
 #include <utility/options/OptionCollection.hh>
 
+#include <numeric/random/random.hh>
+#include <protocols/moves/MonteCarlo.hh>
 using namespace core::scoring;
 int main( int argc, char ** argv) {
 	devel::init( argc, argv ) ;
@@ -38,5 +40,21 @@ int main( int argc, char ** argv) {
 	core::Real score = sfxn -> score(*mypose);
 	std::cout << "Hello World!" << std::endl;
 	std::cout << score << std::endl;
+	core::Size seqpos;
+	protocols::moves::MonteCarlo mc= protocols::moves::MonteCarlo(* mypose, * sfxn, 1.0);
+	seqpos = mypose->size();
+	std::cout << seqpos << std::endl;
+	core::Real uniform_random_number = numeric::random::uniform();
+	core::Real pert1 = numeric::random::gaussian();
+	core::Real pert2 = numeric::random::gaussian();
+	std::cout << uniform_random_number << std::endl;
+	core::Size randres = static_cast< core::Size > ( uniform_random_number * seqpos + 1 );
+	std::cout << randres << std::endl;
+	core::Real orig_phi = mypose->phi( randres );
+	core::Real orig_psi = mypose->psi( randres );
+	mypose->set_phi( randres, orig_phi + pert1 );
+	mypose->set_psi( randres, orig_psi + pert2 );
+	bool boltzmann_pass = mc.boltzmann  (* mypose );
+	std::cout <<orig_phi<< std::endl;
 	return 0;
 }

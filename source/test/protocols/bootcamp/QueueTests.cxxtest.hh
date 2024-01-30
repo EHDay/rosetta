@@ -47,7 +47,8 @@ public:
 	}
 	
 	void test_first() {
-
+		TS_TRACE( "Running my first  unit test!" );
+		TS_ASSERT( true );
 	}
 
 

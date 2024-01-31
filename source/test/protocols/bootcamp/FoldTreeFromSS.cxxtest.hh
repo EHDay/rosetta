@@ -146,9 +146,22 @@ public:
 		}
 		
 		core::Size jumpstart = (ss_vec[1].second + ss_vec[1].first) / 2;
+		
 		if (gap_vec[1].first == 1) {
 			ft.add_edge(jumpstart, 1, core::kinematics::Edge::PEPTIDE );
 			ft.add_edge(jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
+		}
+		core::Size jump_counter = 1;
+		for( core::Size ii=2; ii<=ss_vec.size(); ++ii) {
+			core::Size midpoint = ((ss_vec[ ii ].first + ss_vec[ ii ].second) / 2);
+			ft.add_edge(jumpstart, midpoint, jump_counter);
+			jump_counter += 1;
+		}
+
+		for( core::Size ii = 2; ii < gap_vec.size(); ++ii) {
+			core::Size gap_midpoint = ((gap_vec[ ii ].first + gap_vec [ ii ].second) / 2);
+			ft.add_edge(jumpstart, gap_midpoint, jump_counter);
+			jump_counter += 1;
 		}
 		//std::cout << jumpstart << std::endl;
 

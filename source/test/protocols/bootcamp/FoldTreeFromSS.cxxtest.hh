@@ -30,7 +30,7 @@
 #include <core/pose/Pose.hh>
 #include <core/scoring/dssp/Dssp.hh>
 #include <core/kinematics/FoldTree.hh>
-
+#include <test/util/pose_funcs.hh>
 //using namespace protocols::match;
 //using namespace protocols::match::upstream;
 
@@ -38,7 +38,7 @@
 // --------------- Test Class --------------- //
 
 class FoldTreeFromSS : public CxxTest::TestSuite {
-
+core::pose::Pose mypose;
 public:
 
 
@@ -53,6 +53,8 @@ public:
 	// Shared initialization goes here.
 	void setUp() {
 		core_init();
+		mypose = create_test_in_pdb_pose();
+		
 	}
 
 	// Shared finalization goes here.
@@ -128,21 +130,21 @@ public:
 		if (ss_vec[1].first != 1) {
 			gap_vec.push_back( std::make_pair( 1, ss_vec[1].first-1));
 		}
-		std::cout << gap_vec[1].first << std::endl;
-		std::cout << gap_vec[1].second << std::endl;
+		//std::cout << gap_vec[1].first << std::endl;
+		//std::cout << gap_vec[1].second << std::endl;
 		for (core::Size ii = 2; ii <= ss_vec.size(); ++ii) {
 			gap_vec.push_back( std::make_pair(ss_vec[ii-1].second+1,ss_vec[ii].first-1));
 		}
 		
-		std::cout << "Size: " << ss_vec[ss_vec.size()].second << std::endl;
-		std::cout << "String Size: " << ss.size() << std::endl;
+		//std::cout << "Size: " << ss_vec[ss_vec.size()].second << std::endl;
+		//std::cout << "String Size: " << ss.size() << std::endl;
 		if (ss_vec[ss_vec.size()].second < ss.size()) {
 			gap_vec.push_back( std::make_pair(ss_vec[ss_vec.size()].second+1,ss.size()));
 		}
 
 		for (core::Size ii =1; ii <= gap_vec.size(); ++ii) {
-			std::cout << "Gap first: " << gap_vec [ii].first << std::endl;
-			std::cout << "Gap second: " << gap_vec[ii].second << std::endl;
+			//std::cout << "Gap first: " << gap_vec [ii].first << std::endl;
+			//std::cout << "Gap second: " << gap_vec[ii].second << std::endl;
 		}
 		
 		core::Size jumpstart = (ss_vec[1].second + ss_vec[1].first) / 2;
@@ -192,37 +194,6 @@ public:
 			ft.add_edge(midpoint, ss_vec[ss_vec.size()].second, core::kinematics::Edge::PEPTIDE );
 		}
 			
-		
-		//std::cout << jumpstart << std::endl;
-
-
-
-
-		//if (ss_vec[1].first != 1) {
-		//	ft.add_edge( jumpstart, 1, core::kinematics::Edge::PEPTIDE );
-		//	ft.add_edge( jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
-		//}
-		//for (core::Size ii = 2; ii < ss_vec.size(); ++ii ){ // Sets peptide edges
-		//	std::cout << "Previous end: " << ss_vec[ ii - 1 ].second << std::endl;
-		//	std::cout << "First: " << ss_vec[ ii ].first << std::endl;
-		//	std::cout << "Second: " << ss_vec[ ii ].second << std::endl;
-		//	core::Size loop_midpoint = ((ss_vec[ ii - 1].second + ss_vec[ ii ].first)/2);
-		//	std::cout << "Loop midpoint: " << loop_midpoint << std::endl;
-		//	core::Size midpoint = ((ss_vec [ ii ].second + ss_vec [ ii ].first) / 2);
-		///	std::cout << "Midpoint: " << midpoint << std::endl;
-		//	ft.add_edge( jumpstart, loop_midpoint, ii-1);
-		//	ft.add_edge( loop_midpoint, (ss_vec[ ii-1].second + 1), core::kinematics::Edge::PEPTIDE 
-//);
-		//	ft.add_edge( loop_midpoint, (ss_vec[ii-1].first +1), core::kinematics::Edge::PEPTIDE);
-			//ft.add_edge( midpoint, ss_vec [ ii ].first, core::kinematics::Edge::PEPTIDE );
-			//ft.add_edge( midpoint, ss_vec [ ii ].second, core::kinematics::Edge::PEPTIDE );
-	//}
-		
-		//for(core::Size ii = 1; ii < ss_vec.size()-1; ++ii ) { // Sets jumps
-		//	core::Size midpoint = ((ss_vec [ ii + 1 ].second + ss_vec [ ii + 1].first) / 2);
-		//	ft.add_edge(jumpstart, midpoint, ii);
-		//}
-		
 		return ft;
 	}
 	
@@ -230,7 +201,13 @@ public:
 		std::string test_string ="   EEEEEEE    EEEEEEE         EEEEEEEEE    EEEEEEEEEE   HHHHHH         EEEEEEEEE         EEEEE     ";
 		core::kinematics::FoldTree ft = fold_tree_from_dssp_string(test_string);
 		std::cout << ft << std::endl;
-		std::cout << "Check fold tree: " << ft.check_fold_tree() << std::endl;
+		TS_ASSERT(ft.check_fold_tree());
+		//std::cout << "Check fold tree: " << ft.check_fold_tree() << std::endl;
 	}
 
+	void test_ftss_pose() {
+		core::kinematics::FoldTree ft = fold_tree_from_ss(mypose);
+		std::cout << ft << std::endl;
+		TS_ASSERT(ft.check_fold_tree());
+	}
 };

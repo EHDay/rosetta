@@ -15,8 +15,6 @@
 // Test headers
 #include <cxxtest/TestSuite.h>
 
-#include <protocols/match/upstream/ProteinSCSampler.hh>
-#include <protocols/match/upstream/OriginalScaffoldBuildPoint.hh>
 
 #include <test/util/pose_funcs.hh>
 #include <test/core/init_util.hh>
@@ -28,12 +26,13 @@
 
 // C++ headers
 
-//Auto Headers
-#include <core/pack/dunbrack/DunbrackRotamer.hh>
+// Headers for question 4
+#include <core/pose/Pose.hh>
+#include <core/scoring/dssp/Dssp.hh>
+#include <core/kinematics/FoldTree.hh>
 
-
-using namespace protocols::match;
-using namespace protocols::match::upstream;
+//using namespace protocols::match;
+//using namespace protocols::match::upstream;
 
 
 // --------------- Test Class --------------- //
@@ -113,6 +112,52 @@ public:
 		for (core::Size ii = 1; ii < test_vec.size(); ++ii ){
 			TS_ASSERT( test_vec [ ii ].first <= test_vec [ ii ].second);
 		}
+	}
+
+	core::kinematics::FoldTree fold_tree_from_ss(core::pose::Pose const & pose) {
+		core::scoring::dssp::Dssp dssp( pose );
+		std::string ss = dssp.get_dssp_secstruct();
+		core::kinematics::FoldTree ft_ss = fold_tree_from_dssp_string(ss);
+		return ft_ss;
+	}
+
+	core::kinematics::FoldTree fold_tree_from_dssp_string(std::string const & ss) {
+		core::kinematics::FoldTree ft;
+		utility::vector1< std::pair< core::Size, core::Size > > ss_vec = identify_secondary_structure_spans(ss);
+		core::Size jumpstart = (ss_vec[1].second + ss_vec[1].first) / 2;
+		std::cout << jumpstart << std::endl;
+		if (ss_vec[1].first != 1) {
+			ft.add_edge( jumpstart, 1, core::kinematics::Edge::PEPTIDE );
+			ft.add_edge( jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
+		}
+		for (core::Size ii = 2; ii < ss_vec.size(); ++ii ){ // Sets peptide edges
+			std::cout << "Previous end: " << ss_vec[ ii - 1 ].second << std::endl;
+			std::cout << "First: " << ss_vec[ ii ].first << std::endl;
+			std::cout << "Second: " << ss_vec[ ii ].second << std::endl;
+			core::Size loop_midpoint = ((ss_vec[ ii - 1].second + ss_vec[ ii ].first)/2);
+			std::cout << "Loop midpoint: " << loop_midpoint << std::endl;
+			core::Size midpoint = ((ss_vec [ ii ].second + ss_vec [ ii ].first) / 2);
+			std::cout << "Midpoint: " << midpoint << std::endl;
+			ft.add_edge( jumpstart, loop_midpoint, ii-1);
+			ft.add_edge( loop_midpoint, (ss_vec[ ii-1].second + 1), core::kinematics::Edge::PEPTIDE 
+);
+			ft.add_edge( loop_midpoint, (ss_vec[ii-1].first +1), core::kinematics::Edge::PEPTIDE);
+			//ft.add_edge( midpoint, ss_vec [ ii ].first, core::kinematics::Edge::PEPTIDE );
+			//ft.add_edge( midpoint, ss_vec [ ii ].second, core::kinematics::Edge::PEPTIDE );
+	}
+		
+		//for(core::Size ii = 1; ii < ss_vec.size()-1; ++ii ) { // Sets jumps
+		//	core::Size midpoint = ((ss_vec [ ii + 1 ].second + ss_vec [ ii + 1].first) / 2);
+		//	ft.add_edge(jumpstart, midpoint, ii);
+		//}
+		
+		return ft;
+	}
+	
+	void test_ftss() {
+		std::string test_string ="   EEEEEEE    EEEEEEE         EEEEEEEEE    EEEEEEEEEE   HHHHHH         EEEEEEEEE         EEEEE     ";
+		core::kinematics::FoldTree ft = fold_tree_from_dssp_string(test_string);
+		std::cout << ft << std::endl;
 	}
 
 };

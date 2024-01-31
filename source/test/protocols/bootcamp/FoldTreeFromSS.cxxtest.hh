@@ -144,9 +144,13 @@ public:
 			std::cout << "Gap first: " << gap_vec [ii].first << std::endl;
 			std::cout << "Gap second: " << gap_vec[ii].second << std::endl;
 		}
-		//core::Size jumpstart = (ss_vec[1].second + ss_vec[1].first) / 2;
-		//std::cout << jumpstart << std::endl;
 		
+		core::Size jumpstart = (ss_vec[1].second + ss_vec[1].first) / 2;
+		if (gap_vec[1].first == 1) {
+			ft.add_edge(jumpstart, 1, core::kinematics::Edge::PEPTIDE );
+			ft.add_edge(jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
+		}
+		//std::cout << jumpstart << std::endl;
 
 
 

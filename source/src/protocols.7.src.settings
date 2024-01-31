@@ -106,6 +106,7 @@ sources = {
 	],
 	"protocols/bootcamp" : [
 		"fold_tree_from_ss",
+		"BootCampMover",
 	],
 	"protocols/chemically_conjugated_docking": [
 		"Gp_extra_bodies",

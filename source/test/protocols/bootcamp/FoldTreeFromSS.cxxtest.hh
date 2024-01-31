@@ -124,27 +124,52 @@ public:
 	core::kinematics::FoldTree fold_tree_from_dssp_string(std::string const & ss) {
 		core::kinematics::FoldTree ft;
 		utility::vector1< std::pair< core::Size, core::Size > > ss_vec = identify_secondary_structure_spans(ss);
-		core::Size jumpstart = (ss_vec[1].second + ss_vec[1].first) / 2;
-		std::cout << jumpstart << std::endl;
+		utility::vector1< std::pair< core::Size, core::Size> > gap_vec;
 		if (ss_vec[1].first != 1) {
-			ft.add_edge( jumpstart, 1, core::kinematics::Edge::PEPTIDE );
-			ft.add_edge( jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
+			gap_vec.push_back( std::make_pair( 1, ss_vec[1].first-1));
 		}
-		for (core::Size ii = 2; ii < ss_vec.size(); ++ii ){ // Sets peptide edges
-			std::cout << "Previous end: " << ss_vec[ ii - 1 ].second << std::endl;
-			std::cout << "First: " << ss_vec[ ii ].first << std::endl;
-			std::cout << "Second: " << ss_vec[ ii ].second << std::endl;
-			core::Size loop_midpoint = ((ss_vec[ ii - 1].second + ss_vec[ ii ].first)/2);
-			std::cout << "Loop midpoint: " << loop_midpoint << std::endl;
-			core::Size midpoint = ((ss_vec [ ii ].second + ss_vec [ ii ].first) / 2);
-			std::cout << "Midpoint: " << midpoint << std::endl;
-			ft.add_edge( jumpstart, loop_midpoint, ii-1);
-			ft.add_edge( loop_midpoint, (ss_vec[ ii-1].second + 1), core::kinematics::Edge::PEPTIDE 
-);
-			ft.add_edge( loop_midpoint, (ss_vec[ii-1].first +1), core::kinematics::Edge::PEPTIDE);
+		std::cout << gap_vec[1].first << std::endl;
+		std::cout << gap_vec[1].second << std::endl;
+		for (core::Size ii = 2; ii <= ss_vec.size(); ++ii) {
+			gap_vec.push_back( std::make_pair(ss_vec[ii-1].second+1,ss_vec[ii].first-1));
+		}
+		
+		std::cout << "Size: " << ss_vec[ss_vec.size()].second << std::endl;
+		std::cout << "String Size: " << ss.size() << std::endl;
+		if (ss_vec[ss_vec.size()].second < ss.size()) {
+			gap_vec.push_back( std::make_pair(ss_vec[ss_vec.size()].second+1,ss.size()));
+		}
+
+		for (core::Size ii =1; ii <= gap_vec.size(); ++ii) {
+			std::cout << "Gap first: " << gap_vec [ii].first << std::endl;
+			std::cout << "Gap second: " << gap_vec[ii].second << std::endl;
+		}
+		//core::Size jumpstart = (ss_vec[1].second + ss_vec[1].first) / 2;
+		//std::cout << jumpstart << std::endl;
+		
+
+
+
+
+		//if (ss_vec[1].first != 1) {
+		//	ft.add_edge( jumpstart, 1, core::kinematics::Edge::PEPTIDE );
+		//	ft.add_edge( jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
+		//}
+		//for (core::Size ii = 2; ii < ss_vec.size(); ++ii ){ // Sets peptide edges
+		//	std::cout << "Previous end: " << ss_vec[ ii - 1 ].second << std::endl;
+		//	std::cout << "First: " << ss_vec[ ii ].first << std::endl;
+		//	std::cout << "Second: " << ss_vec[ ii ].second << std::endl;
+		//	core::Size loop_midpoint = ((ss_vec[ ii - 1].second + ss_vec[ ii ].first)/2);
+		//	std::cout << "Loop midpoint: " << loop_midpoint << std::endl;
+		//	core::Size midpoint = ((ss_vec [ ii ].second + ss_vec [ ii ].first) / 2);
+		///	std::cout << "Midpoint: " << midpoint << std::endl;
+		//	ft.add_edge( jumpstart, loop_midpoint, ii-1);
+		//	ft.add_edge( loop_midpoint, (ss_vec[ ii-1].second + 1), core::kinematics::Edge::PEPTIDE 
+//);
+		//	ft.add_edge( loop_midpoint, (ss_vec[ii-1].first +1), core::kinematics::Edge::PEPTIDE);
 			//ft.add_edge( midpoint, ss_vec [ ii ].first, core::kinematics::Edge::PEPTIDE );
 			//ft.add_edge( midpoint, ss_vec [ ii ].second, core::kinematics::Edge::PEPTIDE );
-	}
+	//}
 		
 		//for(core::Size ii = 1; ii < ss_vec.size()-1; ++ii ) { // Sets jumps
 		//	core::Size midpoint = ((ss_vec [ ii + 1 ].second + ss_vec [ ii + 1].first) / 2);

@@ -147,10 +147,15 @@ public:
 		
 		core::Size jumpstart = (ss_vec[1].second + ss_vec[1].first) / 2;
 		
-		if (gap_vec[1].first == 1) {
+		if (gap_vec[1].first == 1) { //Adds first edges
 			ft.add_edge(jumpstart, 1, core::kinematics::Edge::PEPTIDE );
 			ft.add_edge(jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
 		}
+		else {
+			ft.add_edge(jumpstart, ss_vec[1].first, core::kinematics::Edge::PEPTIDE );
+			ft.add_edge(jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
+		}
+		
 		core::Size jump_counter = 1;
 		for( core::Size ii=2; ii<=ss_vec.size(); ++ii) {
 			core::Size midpoint = ((ss_vec[ ii ].first + ss_vec[ ii ].second) / 2);
@@ -163,6 +168,31 @@ public:
 			ft.add_edge(jumpstart, gap_midpoint, jump_counter);
 			jump_counter += 1;
 		}
+
+		for (core::Size ii = 2; ii <ss_vec.size(); ++ii) { //Adding SS edges for middle segments
+			core::Size midpoint = ((ss_vec[ ii ].first + ss_vec [ ii ].second) /2);
+			ft.add_edge(midpoint, ss_vec[ ii ].first, core::kinematics::Edge::PEPTIDE );
+			ft.add_edge(midpoint, ss_vec[ ii ].second, core::kinematics::Edge::PEPTIDE );
+		}
+
+		for (core::Size ii = 2; ii < gap_vec.size(); ++ii) { //Adding loop edges for middle segments
+			core::Size loop_midpoint = ((gap_vec[ ii ].first + gap_vec[ ii ].second) / 2);
+			ft.add_edge(loop_midpoint, gap_vec[ ii ].first, core::kinematics::Edge::PEPTIDE );
+			ft.add_edge(loop_midpoint, gap_vec[ ii ].second, core::kinematics::Edge::PEPTIDE );
+		}
+
+		if (ss_vec[ss_vec.size()].second < ss.size()) { // Adding loop edges for end
+			core::Size midpoint = ((ss_vec[ss_vec.size()].first + ss_vec[ss_vec.size()].second) / 2);
+			ft.add_edge(midpoint, ss_vec[ss_vec.size()].first, core::kinematics::Edge::PEPTIDE );
+			ft.add_edge(midpoint, ss.size(), core::kinematics::Edge::PEPTIDE );
+		}
+		else {
+			core::Size midpoint = ((ss_vec[ss_vec.size()].first + ss_vec[ss_vec.size()].second) / 2);
+			ft.add_edge(midpoint, ss_vec[ss_vec.size()].first, core::kinematics::Edge::PEPTIDE );
+			ft.add_edge(midpoint, ss_vec[ss_vec.size()].second, core::kinematics::Edge::PEPTIDE );
+		}
+			
+		
 		//std::cout << jumpstart << std::endl;
 
 
@@ -200,6 +230,7 @@ public:
 		std::string test_string ="   EEEEEEE    EEEEEEE         EEEEEEEEE    EEEEEEEEEE   HHHHHH         EEEEEEEEE         EEEEE     ";
 		core::kinematics::FoldTree ft = fold_tree_from_dssp_string(test_string);
 		std::cout << ft << std::endl;
+		std::cout << "Check fold tree: " << ft.check_fold_tree() << std::endl;
 	}
 
 };

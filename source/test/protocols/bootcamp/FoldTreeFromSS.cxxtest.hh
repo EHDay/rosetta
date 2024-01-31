@@ -213,7 +213,7 @@ public:
 	
 	void test_ftss() {
 		std::string test_string ="EEEEEEE    EEEEEEE         EEEEEEEEE    EEEEEEEEEE   HHHHHH         EEEEEEEEE         EEEEE     ";
-		core::kinematics::FoldTree ft = fold_tree_from_dssp_string(test_string);
+		core::kinematics::FoldTree ft = protocols::bootcamp::fold_tree_from_dssp_string(test_string);
 		std::cout << ft << std::endl;
 		TS_ASSERT(ft.check_fold_tree());
 		//std::cout << "Check fold tree: " << ft.check_fold_tree() << std::endl;
@@ -221,7 +221,7 @@ public:
 
 	void test_ftss_gap() {
 		std::string test_string ="   EEEEEEE    EEEEEEE         EEEEEEEEE    EEEEEEEEEE   HHHHHH         EEEEEEEEE         EEEEE     ";
-		core::kinematics::FoldTree ft = fold_tree_from_dssp_string(test_string);
+		core::kinematics::FoldTree ft = protocols::bootcamp::fold_tree_from_dssp_string(test_string);
 		std::cout << ft << std::endl;
 		TS_ASSERT(ft.check_fold_tree());
 	}

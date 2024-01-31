@@ -7,9 +7,9 @@
 // (c) For more information, see http://www.rosettacommons.org. Questions about this can be
 // (c) addressed to University of Washington CoMotion, email: license@uw.edu.
 
-/// @file   test/protocols/match/ProteinSCSampler.cxxtest.hh
+/// @file   test/protocols/bootcamp/FoldTreeFromSS.cxxtest.hh
 /// @brief
-/// @author Andrew Leaver-Fay (aleaverfay@gmail.com)
+/// @author Elijah Day (elijahday2021@gmail.com)
 
 
 // Test headers
@@ -31,6 +31,7 @@
 #include <core/scoring/dssp/Dssp.hh>
 #include <core/kinematics/FoldTree.hh>
 #include <test/util/pose_funcs.hh>
+#include <protocols/bootcamp/fold_tree_from_ss.hh>
 //using namespace protocols::match;
 //using namespace protocols::match::upstream;
 
@@ -91,26 +92,26 @@ public:
 	}
 	
 	void test_hello_world() {
-		utility::vector1< std::pair< core::Size, core::Size > > test_vec = identify_secondary_structure_spans("   EEEEE   HHHHHHHH  EEEEE   IGNOR EEEEEE   HHHHHHHHHHH  EEEEE  HHHH    ");
+		utility::vector1< std::pair< core::Size, core::Size > > test_vec = protocols::bootcamp::identify_secondary_structure_spans("   EEEEE   HHHHHHHH  EEEEE   IGNOR EEEEEE   HHHHHHHHHHH  EEEEE  HHHH    ");
 		TS_ASSERT( true );
 	}
 	
 	void test_ignore() {
-		utility::vector1< std::pair< core::Size, core::Size > > test_vec = identify_secondary_structure_spans("   EEEEE   HHHHHHHH  EEEEE   IGNOR EEEEEE   HHHHHHHHHHH  EEEEE  HHHH    ");
+		utility::vector1< std::pair< core::Size, core::Size > > test_vec = protocols::bootcamp::identify_secondary_structure_spans("   EEEEE   HHHHHHHH  EEEEE   IGNOR EEEEEE   HHHHHHHHHHH  EEEEE  HHHH    ");
 		for (core::Size ii = 1; ii <= test_vec.size(); ++ii ){
 			TS_ASSERT( test_vec [ ii ].first < test_vec [ ii ].second);
 		}
 	}
 
 	void test_second() {
-		utility::vector1< std::pair< core::Size, core::Size > > test_vec = identify_secondary_structure_spans("HHHHHHH   HHHHHHHHHHHH      HHHHHHHHHHHHEEEEEEEEEEHHHHHHH EEEEHHH ");
+		utility::vector1< std::pair< core::Size, core::Size > > test_vec = protocols::bootcamp::identify_secondary_structure_spans("HHHHHHH   HHHHHHHHHHHH      HHHHHHHHHHHHEEEEEEEEEEHHHHHHH EEEEHHH ");
 		for (core::Size ii = 1; ii < test_vec.size(); ++ii ){
 			TS_ASSERT( test_vec [ ii ].first < test_vec [ ii ].second);
 		}
 	}
 	
 	void test_third() {
-		utility::vector1< std::pair< core::Size, core::Size > > test_vec = identify_secondary_structure_spans("EEEEEEEEE EEEEEEEE EEEEEEEEE H EEEEE H H H EEEEEEEE");
+		utility::vector1< std::pair< core::Size, core::Size > > test_vec = protocols::bootcamp::identify_secondary_structure_spans("EEEEEEEEE EEEEEEEE EEEEEEEEE H EEEEE H H H EEEEEEEE");
 		for (core::Size ii = 1; ii < test_vec.size(); ++ii ){
 			TS_ASSERT( test_vec [ ii ].first <= test_vec [ ii ].second);
 		}
@@ -119,22 +120,32 @@ public:
 	core::kinematics::FoldTree fold_tree_from_ss(core::pose::Pose const & pose) {
 		core::scoring::dssp::Dssp dssp( pose );
 		std::string ss = dssp.get_dssp_secstruct();
-		core::kinematics::FoldTree ft_ss = fold_tree_from_dssp_string(ss);
+		core::kinematics::FoldTree ft_ss = protocols::bootcamp::fold_tree_from_dssp_string(ss);
 		return ft_ss;
 	}
 
 	core::kinematics::FoldTree fold_tree_from_dssp_string(std::string const & ss) {
 		core::kinematics::FoldTree ft;
-		utility::vector1< std::pair< core::Size, core::Size > > ss_vec = identify_secondary_structure_spans(ss);
+		utility::vector1< std::pair< core::Size, core::Size > > ss_vec = protocols::bootcamp::identify_secondary_structure_spans(ss);
 		utility::vector1< std::pair< core::Size, core::Size> > gap_vec;
 		if (ss_vec[1].first != 1) {
 			gap_vec.push_back( std::make_pair( 1, ss_vec[1].first-1));
+			for (core::Size ii = 2; ii <= ss_vec.size(); ++ii) {
+				gap_vec.push_back( std::make_pair(ss_vec[ii-1].second+1,ss_vec[ii].first-1));
+			}
+		}
+		else {
+			gap_vec.push_back( std::make_pair( ss_vec[1].second+1, ss_vec[2].first-1));
+			for (core::Size ii = 3; ii <= ss_vec.size(); ++ii) {
+				gap_vec.push_back( std::make_pair(ss_vec[ii-1].second+1,ss_vec[ii].first-1));
+            }
 		}
 		//std::cout << gap_vec[1].first << std::endl;
 		//std::cout << gap_vec[1].second << std::endl;
-		for (core::Size ii = 2; ii <= ss_vec.size(); ++ii) {
-			gap_vec.push_back( std::make_pair(ss_vec[ii-1].second+1,ss_vec[ii].first-1));
-		}
+		
+		//for (core::Size ii = 2; ii <= ss_vec.size(); ++ii) {
+		//	gap_vec.push_back( std::make_pair(ss_vec[ii-1].second+1,ss_vec[ii].first-1));
+		//}
 		
 		//std::cout << "Size: " << ss_vec[ss_vec.size()].second << std::endl;
 		//std::cout << "String Size: " << ss.size() << std::endl;
@@ -142,13 +153,9 @@ public:
 			gap_vec.push_back( std::make_pair(ss_vec[ss_vec.size()].second+1,ss.size()));
 		}
 
-		for (core::Size ii =1; ii <= gap_vec.size(); ++ii) {
-			//std::cout << "Gap first: " << gap_vec [ii].first << std::endl;
-			//std::cout << "Gap second: " << gap_vec[ii].second << std::endl;
-		}
 		
 		core::Size jumpstart = (ss_vec[1].second + ss_vec[1].first) / 2;
-		
+		core::Size jump_counter = 1;
 		if (gap_vec[1].first == 1) { //Adds first edges
 			ft.add_edge(jumpstart, 1, core::kinematics::Edge::PEPTIDE );
 			ft.add_edge(jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
@@ -156,9 +163,16 @@ public:
 		else {
 			ft.add_edge(jumpstart, ss_vec[1].first, core::kinematics::Edge::PEPTIDE );
 			ft.add_edge(jumpstart, ss_vec[1].second, core::kinematics::Edge::PEPTIDE );
+			core::Size first_loop_mid = ((gap_vec[1].first + gap_vec[1].second) / 2);
+			ft.add_edge(jumpstart, first_loop_mid, jump_counter);
+			jump_counter +=1;
+			std::cout << "Gap mid: " << first_loop_mid << std::endl;
+			ft.add_edge(first_loop_mid, gap_vec[1].first, core::kinematics::Edge::PEPTIDE );
+			ft.add_edge(first_loop_mid, gap_vec[1].second, core::kinematics::Edge::PEPTIDE );
 		}
 		
-		core::Size jump_counter = 1;
+		//core::Size jump_counter = 1;
+		
 		for( core::Size ii=2; ii<=ss_vec.size(); ++ii) {
 			core::Size midpoint = ((ss_vec[ ii ].first + ss_vec[ ii ].second) / 2);
 			ft.add_edge(jumpstart, midpoint, jump_counter);
@@ -198,15 +212,21 @@ public:
 	}
 	
 	void test_ftss() {
-		std::string test_string ="   EEEEEEE    EEEEEEE         EEEEEEEEE    EEEEEEEEEE   HHHHHH         EEEEEEEEE         EEEEE     ";
+		std::string test_string ="EEEEEEE    EEEEEEE         EEEEEEEEE    EEEEEEEEEE   HHHHHH         EEEEEEEEE         EEEEE     ";
 		core::kinematics::FoldTree ft = fold_tree_from_dssp_string(test_string);
 		std::cout << ft << std::endl;
 		TS_ASSERT(ft.check_fold_tree());
 		//std::cout << "Check fold tree: " << ft.check_fold_tree() << std::endl;
 	}
 
+	void test_ftss_gap() {
+		std::string test_string ="   EEEEEEE    EEEEEEE         EEEEEEEEE    EEEEEEEEEE   HHHHHH         EEEEEEEEE         EEEEE     ";
+		core::kinematics::FoldTree ft = fold_tree_from_dssp_string(test_string);
+		std::cout << ft << std::endl;
+		TS_ASSERT(ft.check_fold_tree());
+	}
 	void test_ftss_pose() {
-		core::kinematics::FoldTree ft = fold_tree_from_ss(mypose);
+		core::kinematics::FoldTree ft = protocols::bootcamp::fold_tree_from_ss(mypose);
 		std::cout << ft << std::endl;
 		TS_ASSERT(ft.check_fold_tree());
 	}

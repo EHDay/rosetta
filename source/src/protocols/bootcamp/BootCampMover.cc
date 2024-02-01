@@ -63,6 +63,7 @@
 #include <protocols/jd2/JobDistributor.hh>
 #include <devel/init.hh>
 #include <protocols/moves/Mover.hh>
+#include <protocols/moves/MoverFactory.hh>
 
 static basic::Tracer TR( "protocols.bootcamp.BootCampMover" );
 

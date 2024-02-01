@@ -259,5 +259,4 @@ operator<<( std::ostream & os, BootCampMover const & mover )
 	return os;
 }
 
-
 } //BootCampMover

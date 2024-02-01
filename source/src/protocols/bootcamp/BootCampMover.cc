@@ -2,7 +2,7 @@
 // vi: set ts=2 noet:
 //
 // (c) Copyright Rosetta Commons Member Institutions.
-// (c) This file is part of the Rosetta software suite and is made available under license.
+// (c) This file is part o/f the Rosetta software suite and is made available under license.
 // (c) The Rosetta software is developed by the contributing members of the Rosetta Commons.
 // (c) For more information, see http://www.rosettacommons.org. Questions about this can be
 // (c) addressed to University of Washington CoMotion, email: license@uw.edu.
@@ -62,12 +62,12 @@
 #include <core/pose/variant_util.hh>
 #include <protocols/jd2/JobDistributor.hh>
 #include <devel/init.hh>
-
-
+#include <protocols/moves/Mover.hh>
 
 static basic::Tracer TR( "protocols.bootcamp.BootCampMover" );
 
-namespace BootCampMover {
+namespace protocols {
+namespace bootcamp {
 
 	/////////////////////
 	/// Constructors  ///
@@ -76,13 +76,11 @@ namespace BootCampMover {
 /// @brief Default constructor
 BootCampMover::BootCampMover():
 	protocols::moves::Mover( BootCampMover::mover_name() )
-{
-
-}
+{}
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Destructor (important for properly forward-declaring smart-pointer members)
-BootCampMover::~BootCampMover(){}
+BootCampMover::~BootCampMover() = default;
 
 ////////////////////////////////////////////////////////////////////////////////
 	/// Mover Methods ///
@@ -154,8 +152,10 @@ BootCampMover::apply( core::pose::Pose& mypose){
 			TR << "Acceptance Rate" << acceptance_rate << std::endl;
 			TR << "Score average" << (score_avg/i) << std::endl;
 		}
+	}
 }
-}
+//}
+//}
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Show the contents of the Mover
 void
@@ -258,5 +258,5 @@ operator<<( std::ostream & os, BootCampMover const & mover )
 	mover.show(os);
 	return os;
 }
-
+}
 } //BootCampMover

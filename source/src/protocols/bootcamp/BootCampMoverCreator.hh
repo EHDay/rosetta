@@ -15,8 +15,8 @@
 #define INCLUDED_protocols_bootcamp_BootCampMoverCreator_HH
 
 #include <protocols/moves/MoverCreator.hh>
-
-namespace BootCampMover {
+namespace protocols {
+namespace bootcamp {
 
 class BootCampMoverCreator : public protocols::moves::MoverCreator {
 public:
@@ -26,5 +26,5 @@ public:
 };
 
 } //BootCampMover
-
+}
 #endif //INCLUDED_protocols_bootcamp_BootCampMoverCreator_HH

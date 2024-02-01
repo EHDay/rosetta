@@ -19,13 +19,11 @@
 
 
 // Forward
-namespace BootCampMover {
-
+namespace protocols {
+namespace bootcamp {
 class BootCampMover;
-
-typedef utility::pointer::shared_ptr< BootCampMover> BootCampMoverOP;
-typedef utility::pointer::shared_ptr< BootCampMover const > BootCampMoverCOP;
-
-} //BootCampMover
-
+using BootCampMoverOP = utility::pointer::shared_ptr< BootCampMover >;
+using BootCampMoverCOP = utility::pointer::shared_ptr< BootCampMover const >;
+}
+}
 #endif //INCLUDED_protocols_bootcamp_BootCampMover_fwd_hh

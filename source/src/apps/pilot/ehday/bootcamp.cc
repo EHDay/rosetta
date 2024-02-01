@@ -37,86 +37,33 @@
 #include <core/kinematics/FoldTree.hh>
 #include <protocols/bootcamp/fold_tree_from_ss.hh>
 #include <core/pose/variant_util.hh>
-
-using namespace core::scoring;
-int main( int argc, char ** argv) {
-	devel::init( argc, argv ) ;
+#include <protocols/jd2/JobDistributor.hh>
+#include <devel/init.hh>
+#include <protocols/bootcamp/BootCampMover.hh>
+#include <protocols/bootcamp/BootCampMover.fwd.hh>
+//using namespace core::scoring;
+int main(int argc, char ** argv) {
+devel::init( argc, argv ) ;
 	utility::vector1< std::string > filenames = basic::options::option[
 	basic::options::OptionKeys::in::file::s ].value();
 	if ( filenames.size() > 0 ) {
-		std::cout << "You entered: " << filenames[ 1 ] << " as the PDB file to be read" << std::endl;
+		std::cout << "You entered (DEBUG): " << filenames[ 1 ] << " as the PDB file to be read" << std::endl;
 	}
 	else {
 		std::cout << "You didn't provide a PDB file with the -in::file::s option" << std::endl;
 		return 1;
 	}
-	
 	core::pose::PoseOP mypose = core::import_pose::pose_from_file( filenames[1] );
-	ScoreFunctionOP sfxn = get_score_function();
-	sfxn ->set_weight( core::scoring::linear_chainbreak, 1.0); // Lab 4
-	core::Real score = sfxn -> score(*mypose);
-	
-	std::cout << "Initial score: " << score << std::endl;
-	
-	core::Size seqpos;
-	protocols::moves::MonteCarlo mc= protocols::moves::MonteCarlo(* mypose, * sfxn, 1.0);
-	seqpos = mypose->size();
-	std::cout << "Number of residues: " << seqpos << std::endl;
-	
 	protocols::moves::PyMOLObserverOP the_observer = protocols::moves::AddPyMOLObserver( *mypose, true, 0 );
-	//the_observer->pymol().apply( *mypose);
-
-	core::kinematics::MoveMap mm;
-	mm.set_bb( true );
-	mm.set_chi( true);
-
-	core::optimization::MinimizerOptions min_opts( "lbfgs_armijo_atol", 0.01, true );
+	//the_observer->pymol().apply( *mypose);	
+	protocols::bootcamp::BootCampMoverOP boot_mover ( new protocols::bootcamp::BootCampMover);
+//( new protocols::bootcamp::BootCampMover );
+	protocols::jd2::JobDistributor::get_instance()->go(boot_mover);
 	
-	core::optimization::AtomTreeMinimizer atm;
-	core::pose::Pose copy_pose;
-	core::Real score_avg = 0;
-	core::Size accepted = 0;
-	core::Size not_accepted = 0;
+	
 
-	core::kinematics::FoldTree ft = protocols::bootcamp::fold_tree_from_ss(*mypose); // Lab 4
-	core::pose::correctly_add_cutpoint_variants(*mypose);
-	the_observer->pymol().apply( *mypose);
-	for (core::Size i = 1; i <= 200;++i) {
-		//std::cout << i << std::endl;
-		
-		core::Real uniform_random_number = numeric::random::uniform();
-		core::Real pert1 = numeric::random::gaussian();
-		core::Real pert2 = numeric::random::gaussian();
-		
-		
-		core::Size randres = static_cast< core::Size > ( uniform_random_number * seqpos + 1 );
-		
-		core::Real orig_phi = mypose->phi( randres );
-		core::Real orig_psi = mypose->psi( randres );
-		mypose->set_phi( randres, orig_phi + pert1 );
-		mypose->set_psi( randres, orig_psi + pert2 );
-		core::pack::task::PackerTaskOP repack_task = core::pack::task::TaskFactory::create_packer_task( *mypose );
-		repack_task->restrict_to_repacking();
-		core::pack::pack_rotamers( *mypose, *sfxn, repack_task );
-		copy_pose = *mypose;
-		atm.run( copy_pose, mm, *sfxn, min_opts );
-		*mypose = copy_pose;
-		bool boltzmann_pass = mc.boltzmann (* mypose );
-		score_avg += mc.last_score();
-		if (boltzmann_pass) {
-			accepted += 1;
-		}
-		else {
-			not_accepted += 1;
-		}
-		std::cout <<accepted<< std::endl;
-		std::cout << not_accepted<<std::endl;
 
-		if (i % 100 == 0) {
-			core::Real acceptance_rate = (core::Real) accepted / (core::Real) i;
-			std::cout << "Acceptance Rate" << acceptance_rate << std::endl;
-			std::cout << "Score average" << (score_avg/i) << std::endl;
-		}
-	}
+	
+
 	return 0;
 }

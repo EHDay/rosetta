@@ -15,7 +15,7 @@
 #define INCLUDED_protocols_bootcamp_BootCampMover_HH
 
 // Unit headers
-#include <protocols/bootcamp/BootCampMover.fwd.hh>
+//#include <protocols/bootcamp/BootCampMover.fwd.hh>
 #include <protocols/moves/Mover.hh>
 
 // Protocol headers
@@ -27,7 +27,7 @@
 // Project headers
 #include <core/types.hh>
 #include <core/id/types.hh>
-#include <core/kinematics/MoveMap.fwd.hh>
+#include <core/kinematics/MoveMap.hh>
 
 
 // Basic/Utility headers
@@ -37,14 +37,12 @@
 //#include <utility/tag/XMLSchemaGeneration.fwd.hh> //transcluded from Mover
 
 #include <basic/citation_manager/UnpublishedModuleInfo.fwd.hh>
-
-namespace BootCampMover {
-
+namespace protocols{
+namespace bootcamp{
 ///@brief Bootcamp_pilot_app_mover
 class BootCampMover : public protocols::moves::Mover {
 
 public:
-
 	/////////////////////
 	/// Constructors  ///
 	/////////////////////
@@ -53,7 +51,7 @@ public:
 	BootCampMover();
 
 
-	BootCampMover( core::kinematics::MoveMapOP input_movemap );
+	//BootCampMover( ScoreFunctionOP scorefxn_in );
 	/// @brief Destructor (important for properly forward-declaring smart-pointer members)
 	~BootCampMover() override;
 
@@ -119,7 +117,6 @@ private: // data
 
 std::ostream &
 operator<<( std::ostream & os, BootCampMover const & mover );
-
-} //BootCampMover
-
+}
+}
 #endif //protocols_bootcamp_BootCampMover_HH

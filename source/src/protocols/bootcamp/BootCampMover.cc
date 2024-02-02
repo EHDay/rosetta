@@ -64,6 +64,8 @@
 #include <devel/init.hh>
 #include <protocols/moves/Mover.hh>
 #include <protocols/moves/MoverFactory.hh>
+#include <core/scoring/ScoreFunction.fwd.hh>
+#include <protocols/rosetta_scripts/util.hh>
 
 static basic::Tracer TR( "protocols.bootcamp.BootCampMover" );
 
@@ -119,7 +121,7 @@ BootCampMover::apply( core::pose::Pose& mypose){
 
 	core::kinematics::FoldTree ft = protocols::bootcamp::fold_tree_from_ss(mypose); // Lab 4
 	core::pose::correctly_add_cutpoint_variants(mypose);
-	for (core::Size i = 1; i <= 200;++i) {
+	for (core::Size i = 1; i <= num_iterations_;++i) {
 
 		core::Real uniform_random_number = numeric::random::uniform();
 		core::Real pert1 = numeric::random::gaussian();
@@ -172,21 +174,62 @@ BootCampMover::show(std::ostream & output) const
 /// @brief parse XML tag (to use this Mover in Rosetta Scripts)
 void
 BootCampMover::parse_my_tag(
-	utility::tag::TagCOP ,
-	basic::datacache::DataMap&
-) {
+	TagCOP const tag,
+	basic::datacache::DataMap & datamap
+) 
+{
+	if ( tag->hasOption("niterations") ) {
+		num_iterations_ = tag->getOption<core::Size>("niterations",1);
+		runtime_assert( num_iterations_ > 0 );
+	}
+	BootCampMover::parse_score_function( tag, datamap );
+
 
 }
+
+void
+BootCampMover::parse_score_function(
+	TagCOP const tag,
+	basic::datacache::DataMap const & datamap
+)
+{
+	core::scoring::ScoreFunctionOP new_score_function( protocols::rosetta_scripts::parse_score_function( tag, datamap) );
+	if ( new_score_function == nullptr ) return;
+	BootCampMover::set_sfxn( new_score_function );
+}
+	
+
 void BootCampMover::provide_xml_schema( utility::tag::XMLSchemaDefinition & xsd )
 {
 
 	using namespace utility::tag;
 	AttributeList attlist;
-
-	//here you should write code to describe the XML Schema for the class.  If it has only attributes, simply fill the probided AttributeList.
-
+	attlist + XMLSchemaAttribute("niterations", xsct_non_negative_integer, "Number of iterations.");
 	protocols::moves::xsd_type_definition_w_attributes( xsd, mover_name(), "Bootcamp_pilot_app_mover", attlist );
+	rosetta_scripts::attributes_for_parse_score_function(attlist);
+
 }
+
+//////////////////////////////////////////////
+// Lab 6 functions
+
+core::Size BootCampMover::get_iteration() {
+	return num_iterations_;
+	}
+ 
+core::scoring::ScoreFunctionOP BootCampMover::get_sfxn() {
+	return sfxn_;
+	}
+
+void BootCampMover::set_iterations(core::Size iterations)	{
+	num_iterations_ = iterations;
+	}
+	
+void BootCampMover::set_sfxn(core::scoring::ScoreFunctionOP sfxn) {
+	sfxn_ = sfxn;
+	}
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////

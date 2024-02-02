@@ -23,7 +23,7 @@
 
 // Core headers
 #include <core/pose/Pose.fwd.hh>
-
+#include <core/scoring/ScoreFunction.fwd.hh>
 // Project headers
 #include <core/types.hh>
 #include <core/id/types.hh>
@@ -34,7 +34,7 @@
 #include <basic/datacache/DataMap.fwd.hh>
 #include <utility/vector1.fwd.hh>
 
-//#include <utility/tag/XMLSchemaGeneration.fwd.hh> //transcluded from Mover
+#include <utility/tag/XMLSchemaGeneration.fwd.hh> //transcluded from Mover
 
 #include <basic/citation_manager/UnpublishedModuleInfo.fwd.hh>
 namespace protocols{
@@ -80,9 +80,13 @@ public:
 	/// @brief parse XML tag (to use this Mover in Rosetta Scripts)
 	void
 	parse_my_tag(
-		utility::tag::TagCOP tag,
-		basic::datacache::DataMap & data ) override;
+		TagCOP const tag,
+		basic::datacache::DataMap & datamap ) override;
 
+	void
+	parse_score_function(
+		TagCOP const tag,
+		basic::datacache::DataMap const & datamap );
 	//BootCampMover & operator=( BootCampMover const & src );
 
 	/// @brief required in the context of the parser/scripting scheme
@@ -104,6 +108,16 @@ public:
 	void
 	provide_xml_schema( utility::tag::XMLSchemaDefinition & xsd );
 
+public: //Lab 6 functions
+	
+	core::Size get_iteration();
+
+	core::scoring::ScoreFunctionOP get_sfxn();
+
+	void set_iterations(core::Size interations);
+
+	void set_sfxn(core::scoring::ScoreFunctionOP sfxn);
+
 public: //Function overrides needed for the citation manager:
 
 	/// @brief This mover is unpublished.  It returns Elijah Day as its author.
@@ -112,6 +126,8 @@ public: //Function overrides needed for the citation manager:
 private: // methods
 
 private: // data
+	core::scoring::ScoreFunctionOP sfxn_;
+	core::Size num_iterations_;
 
 };
 

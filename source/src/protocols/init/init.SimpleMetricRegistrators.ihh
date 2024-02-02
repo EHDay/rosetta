@@ -60,6 +60,7 @@ static SimpleMetricRegistrator< core::simple_metrics::metrics::ShapeSimilarityMe
 
 static SimpleMetricRegistrator< core::simple_metrics::per_residue_metrics::LoadedProbabilitiesMetricCreator > reg_LoadedProbabilitiesMetricCreator;
 
+
 static SimpleMetricRegistrator< core::simple_metrics::per_residue_metrics::SidechainNeighborCountMetricCreator >
 	reg_SidechainNeighborCountMetricCreator;
 
@@ -121,6 +122,7 @@ static SimpleMetricRegistrator< protocols::analysis::simple_metrics::SequenceRec
 static SimpleMetricRegistrator< protocols::analysis::burial_metrics::PolarGroupBurialPyMolStringMetricCreator > reg_PolarGroupBurialPyMolStringMetricCreator;
 
 // Added by VKM, 19 April 2020:
+static SimpleMetricRegistrator< protocols::bootcamp::PerResidueBfactorMetricCreator > reg_PerResidueBfactorMetricCreator;
 static SimpleMetricRegistrator< protocols::cyclic_peptide::PeptideInternalHbondsMetricCreator > reg_PeptideInternalHbondsMetricCreator;
 
 static SimpleMetricRegistrator< protocols::drug_design::RDKitMetricCreator > reg_RDKitMetricCreator;

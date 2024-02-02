@@ -41,6 +41,7 @@
 #include <protocols/analysis/simple_metrics/SequenceRecoveryMetricCreator.hh>
 
 #include <protocols/analysis/burial_metrics/PolarGroupBurialPyMolStringMetricCreator.hh> //Added by VKM, 22 April 2018.
+#include <protocols/bootcamp/PerResidueBfactorMetricCreator.hh>
 
 #include <protocols/cyclic_peptide/PeptideInternalHbondsMetricCreator.hh> //Added by VKM, 19 April 2020.
 

@@ -54,7 +54,7 @@ utility::vector1< std::pair< core::Size, core::Size > > identify_secondary_struc
 	return ss_boundaries;
 }
 
-core::kinematics::FoldTree fold_tree_from_ss(core::pose::Pose const & pose) {
+FoldTreeFromSS::FoldTreeFromSS ( std::string const & ss_string) {
 	core::scoring::dssp::Dssp dssp( pose );
 	std::string ss = dssp.get_dssp_secstruct();
 	core::kinematics::FoldTree ft_ss = fold_tree_from_dssp_string(ss);
@@ -77,15 +77,8 @@ core::kinematics::FoldTree fold_tree_from_dssp_string(std::string const & ss) {
                 gap_vec.push_back( std::make_pair(ss_vec[ii-1].second+1,ss_vec[ii].first-1));
             }
         }
-        //std::cout << gap_vec[1].first << std::endl;
-        //std::cout << gap_vec[1].second << std::endl;
 
-        //for (core::Size ii = 2; ii <= ss_vec.size(); ++ii) {
-        //  gap_vec.push_back( std::make_pair(ss_vec[ii-1].second+1,ss_vec[ii].first-1));
-        //}
 
-        //std::cout << "Size: " << ss_vec[ss_vec.size()].second << std::endl;
-        //std::cout << "String Size: " << ss.size() << std::endl;
         if (ss_vec[ss_vec.size()].second < ss.size()) {
             gap_vec.push_back( std::make_pair(ss_vec[ss_vec.size()].second+1,ss.size()));
         }
@@ -107,7 +100,6 @@ core::kinematics::FoldTree fold_tree_from_dssp_string(std::string const & ss) {
             ft.add_edge(first_loop_mid, gap_vec[1].second, core::kinematics::Edge::PEPTIDE );
         }
 
-        //core::Size jump_counter = 1;
 
         for( core::Size ii=2; ii<=ss_vec.size(); ++ii) {
             core::Size midpoint = ((ss_vec[ ii ].first + ss_vec[ ii ].second) / 2);

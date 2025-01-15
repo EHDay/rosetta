@@ -477,6 +477,7 @@ enum ScoreType {
 	covalent_labeling_fa, //FA form of covalent labeling
 	hrf_ms_labeling,
 	hrf_dynamics,
+	hrf_gbm,
 	ccs_imms,
 	depc_ms,
 	rnp_env,

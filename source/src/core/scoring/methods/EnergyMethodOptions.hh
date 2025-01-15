@@ -270,6 +270,12 @@ public:
 	hrf_dynamics_input( std::string const & setting );
 
 	std::string
+	hrf_gbm_input() const;
+
+	void
+	hrf_gbm_input( std::string const & setting );
+
+	std::string
 	depc_ms_input() const;
 
 	void

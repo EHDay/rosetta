@@ -103,10 +103,10 @@ HRF_GBM_Energy::residue_energy(
 					numeric::xyzVector<core::Real> norm_CA_target_vector = (residue.xyz(target_atom) - residue.xyz("CA")).normalize()/(residue.xyz(target_atom).distance(residue.xyz("CA")));
 					numeric::xyzVector<core::Real> norm_neighbor_vector = (pose.residue(res_count_neighbor).xyz(neighbor_atom)-residue.xyz("CA"))/(pose.residue(res_count_neighbor).xyz(neighbor_atom).distance(residue.xyz("CA")));
 					angle = std::acos(norm_CA_target_vector.dot(norm_neighbor_vector));
-					neighbor_count += 1.0/(1.0 + std::exp(1.0*(distance-9.0)))*1.0/(1.0 + std::exp(numeric::NumericTraits< float >::pi()*2.0*(angle-numeric::NumericTraits< float >::pi()/2.0)));
+					pose_neighbor_count += 1.0/(1.0 + std::exp(1.0*(distance-9.0)))*1.0/(1.0 + std::exp(numeric::NumericTraits< float >::pi()*2.0*(angle-numeric::NumericTraits< float >::pi()/2.0)));
 				}
 			}
-			emap[ core::scoring::hrf_gbm] += -1.0/(1.0 + std::exp(2.9*(std::abs(neighbor_count - nc_from_file)-2.1))); //2.9 and 2.1 were optimized in the Day 2025 manuscript
+			emap[ core::scoring::hrf_gbm] += -1.0/(1.0 + std::exp(2.9*(std::abs(pose_neighbor_count - nc_from_file)-2.1))); //2.9 and 2.1 were optimized in the Day 2025 manuscript
 		}
 	}
 }

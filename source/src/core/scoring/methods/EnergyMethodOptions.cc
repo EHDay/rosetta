@@ -365,7 +365,7 @@ void EnergyMethodOptions::initialize_from_options( utility::options::OptionColle
 	covalent_labeling_input_ = ( options[ basic::options::OptionKeys::score::covalent_labeling_input ].user() ? std::string(options[ basic::options::OptionKeys::score::covalent_labeling_input ]()) : std::string("") );
 	covalent_labeling_fa_input_ = ( options[ basic::options::OptionKeys::score::covalent_labeling_fa_input ].user() ? std::string(options[ basic::options::OptionKeys::score::covalent_labeling_fa_input ]()) : std::string("") );
 	hrf_dynamics_input_ = ( options[ basic::options::OptionKeys::score::hrf_dynamics_input ].user() ? std::string(options[ basic::options::OptionKeys::score::hrf_dynamics_input ]()) : std::string("") );
-	hrf_gbm_input_ = ( options[ basic::options::OptionsKeys::score::hrf_gbm_input ].user() ? std::string(options[ basic::options::OptionsKeys::score::hrf_gbm_input ]()) : std::string("") );
+	hrf_gbm_input_ = ( options[ basic::options::OptionKeys::score::hrf_gbm_input ].user() ? std::string(options[ basic::options::OptionKeys::score::hrf_gbm_input ]()) : std::string("") );
 	depc_ms_input_ = ( options [ basic::options::OptionKeys::score::depc_ms_input ].user() ? std::string(options[ basic::options::OptionKeys::score::depc_ms_input ]()) : std::string("") );
 	elec_max_dis_ = options[basic::options::OptionKeys::score::elec_max_dis ]();
 	elec_min_dis_ = options[basic::options::OptionKeys::score::elec_min_dis ]();

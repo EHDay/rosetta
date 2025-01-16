@@ -48,7 +48,7 @@ public:
 	}
 
 	//test score term
-	void test_hrf_dynam() {
+	void test_hrf_gbm() {
 
 		using namespace core;
 		using namespace core::pose;

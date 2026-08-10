@@ -88,6 +88,8 @@
 #include <core/energy_methods/HRFDynamicsEnergyCreator.hh>
 #include <core/energy_methods/HRF_GBM_EnergyCreator.hh>
 #include <core/energy_methods/CCS_IMMSEnergyCreator.hh>
+#include <core/energy_methods/CCS_IMMSComplexEnergyCreator.hh>
+#include <core/energy_methods/CCS_IMMS_with_CryoEMEnergyCreator.hh>
 #include <core/energy_methods/CovalentLabelingEnergyCreator.hh>
 #include <core/energy_methods/CovalentLabelingFAEnergyCreator.hh>
 #include <core/energy_methods/DEPC_MS_EnergyCreator.hh>
@@ -489,6 +491,8 @@ static EnergyMethodRegistrator< energy_methods::HRFDynamicsEnergyCreator > HRFDy
 static EnergyMethodRegistrator< energy_methods::HRF_GBM_EnergyCreator > HRF_GBM_EnergyCreator_registrator;
 static EnergyMethodRegistrator< energy_methods::HRF_MSLabelingEnergyCreator > HRF_MSLabelingEnergyCreator_registrator;
 static EnergyMethodRegistrator< energy_methods::CCS_IMMSEnergyCreator > CCS_IMMSEnergyCreator_registrator;
+static EnergyMethodRegistrator< energy_methods::CCS_IMMSComplexEnergyCreator > CCS_IMMSComplexEnergyCreator_registrator;
+static EnergyMethodRegistrator< energy_methods::CCS_IMMS_with_CryoEMEnergyCreator > CCS_IMMS_with_CryoEMEnergyCreator_registrator;
 static EnergyMethodRegistrator< energy_methods::RG_Energy_FastCreator > RG_Energy_FastCreator_registrator;
 static EnergyMethodRegistrator< energy_methods::RG_LocalEnergyCreator > RG_LocalEnergyCreator_registrator;
 static EnergyMethodRegistrator< energy_methods::SA_EnergyCreator > SA_EnergyCreator_registrator;

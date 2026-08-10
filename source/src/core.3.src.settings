@@ -111,6 +111,7 @@ sources = {
 	],
 	"core/pose": [
 		"annotated_sequence",
+		"DockingPartners",
 		"MiniPose",
 		"PDBInfo",
 		"PDBPoseMap",
@@ -963,5 +964,4 @@ subprojects = [
 	"core.2",
 	"utility",
 	"ObjexxFCL",
-	"cifparse",
 ]

@@ -9,7 +9,7 @@
 
 /// @file   core/energy_methods/HRF_GBM_Energy.hh
 /// @brief  Energy term used for scoring HRF_GBM_Energy
-/// @author Sarah Biehn
+/// @author Elijah Day (ehday@ucla.edu)
 
 #ifndef INCLUDED_core_energy_methods_HRF_GBM_Energy_hh
 #define INCLUDED_core_energy_methods_HRF_GBM_Energy_hh
@@ -76,4 +76,4 @@ private:
 }
 }
 
-#endif // INCLUDED_core_energy_methods_HRF_GBM_Energy_HH
+#endif // INCLUDED_core_energy_methods_HRF_GBM_Energy_hh

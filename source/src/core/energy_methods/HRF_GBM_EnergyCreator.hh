@@ -9,18 +9,12 @@
 
 /// @file   src/core/energy_methods/HRF_GBM_EnergyCreator.hh
 /// @brief  Declaration of class that connects HRF_GBM_Energy with the ScoringManager
-/// @author Elijah Day (day.756@osu.edu)
+/// @author Elijah Day (ehday@ucla.edu)
 
 #ifndef INCLUDED_core_energy_methods_HRF_GBM_EnergyCreator_hh
 #define INCLUDED_core_energy_methods_HRF_GBM_EnergyCreator_hh
 
 #include <core/scoring/methods/EnergyMethodCreator.hh>
-
-//#include <core/scoring/methods/EnergyMethodOptions.fwd.hh>
-//#include <core/scoring/methods/EnergyMethod.fwd.hh>
-
-//#include <utility/vector1.hh>
-
 
 namespace core {
 namespace energy_methods {
@@ -45,4 +39,4 @@ public:
 }
 }
 
-#endif // INCLUDED_core_scoring_ScoreFunction_HH
+#endif // INCLUDED_core_energy_methods_HRF_GBM_EnergyCreator_hh

@@ -9,7 +9,7 @@
 
 /// @file   core/energy_methods/HRF_GBM_Energy.hh
 /// @brief  Score term using predicted neighbor counts from experimentally derived HRF-MS data
-/// @author Sarah Biehn
+/// @author Elijah Day (ehday@ucla.edu)
 
 
 #ifndef INCLUDED_core_energy_methods_HRF_GBM_Energy_fwd_hh
@@ -26,11 +26,7 @@
 
 namespace core {
 namespace energy_methods {
-
-
-
 class HRF_GBM_Energy;
-
 }
 }
-#endif // INCLUDED_core_scoring_ScoreFunction_HH
+#endif // INCLUDED_core_energy_methods_HRF_GBM_Energy_fwd_hh

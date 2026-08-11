@@ -8,8 +8,8 @@
 // (c) addressed to University of Washington UW TechTransfer, email: license@u.washington.edu.
 
 /// @file   core/energy_methods/HRF_GBM_Energy.cc
-/// @brief  Score term assesses neighbor count agreement between decoy and expected value generated from external lightGBM model. Model uses experimental HRF data as input feature. Detailed in manuscript to be published in 2025.
-/// @author Elijah Day (day.756@osu.edu
+/// @brief  Score term assesses neighbor count agreement between decoy and expected value generated from external lightGBM model. Model uses experimental HRF data as input feature. Detailed in manuscript published in 2025.
+/// @author Elijah Day (ehday@ucla.edu)
 
 #include <core/energy_methods/HRF_GBM_Energy.hh>
 #include <core/energy_methods/HRF_GBM_EnergyCreator.hh>

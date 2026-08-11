@@ -9,7 +9,7 @@
 // /// @file test/core/scoring/HRF_GBM_Energy.cxxtest.hh
 // /// @brief Unit tests for HRF_GBM score term.
 // /// @details This is a unit test for the HRF_GBM score function to ensure it's working as intended and that it isn't disrupted by future updates to Rosetta.
-// /// @author Elijah Day (day.756@osu.edu)
+// /// @author Elijah Day (ehday@ucla.edu)
 
 // // Test headers
 #include <cxxtest/TestSuite.h>
@@ -64,7 +64,6 @@ public:
 		sfxn.set_energy_method_options( options ); //pass the input file to the score function
 		sfxn.set_weight( hrf_gbm, 9.0 ); //rescore with hrf_gbm
 		TR << sfxn( pose ) << std::endl;
-		//TR << "\t" << pose.sequence() << " \t " << 0 << " \t " << pose.energies() << std::endl;
 		TR << "\t" << pose.energies().total_energies()[ hrf_gbm ] << std::endl;
 		TS_ASSERT_DELTA( sfxn( pose ), -74.818, 1e-1 ); //assess difference in scores
 		TS_ASSERT_DELTA( pose.energies().total_energies()[ hrf_gbm ], -8.313, 1e-1 );
